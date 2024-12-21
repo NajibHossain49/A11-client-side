@@ -1,42 +1,57 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
+import { useParams, useNavigate } from "react-router-dom";
 import axios from "axios";
 import { ToastContainer, toast } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
 
-const AddBook = () => {
+const UpdateBookPage = () => {
+  const { id } = useParams(); // Get book ID from URL
+  const navigate = useNavigate();
   const categories = ["Novel", "Thriller", "History", "Drama", "Sci-Fi"];
+
+  const [book, setBook] = useState(null);
+
+  useEffect(() => {
+    // Fetch the specific book data
+    const fetchBook = async () => {
+      try {
+        const response = await axios.get(`${import.meta.env.VITE_API_URL}/books/${id}`);
+        setBook(response.data);
+      } catch (error) {
+        console.error("Error fetching book:", error);
+      }
+    };
+    fetchBook();
+  }, [id]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-  
-    // Collecting form data using event.target elements
+
+    // Extract values from event.target
     const formData = {
       image: e.target.image.value,
       name: e.target.name.value,
-      quantity: e.target.quantity.value,
       authorName: e.target.authorName.value,
       category: e.target.category.value,
-      shortDescription: e.target.shortDescription.value,
       rating: e.target.rating.value,
     };
-  
+
     try {
-      // Use the VITE_API_URL environment variable for the base URL
-      const response = await axios.post(`${import.meta.env.VITE_API_URL}/add-book`, formData);
-      if (response.data.message === "Book Added") {
-        toast.success("Book added successfully!");
-        e.target.reset(); // Reset the form after successful submission
-      }
+      await axios.put(`${import.meta.env.VITE_API_URL}/books/${id}`, formData);
+      toast.success("Book updated successfully!");
+      navigate("/all-books"); // Redirect to All Books Page
     } catch (error) {
-      toast.error("Error adding book. Please try again.");
+      toast.error("Error updating book. Please try again.");
       console.error(error);
     }
   };
-  
+
+  if (!book) {
+    return <div>Loading...</div>; // Handle loading state
+  }
 
   return (
     <div className="max-w-2xl mx-auto p-6 bg-gray-100 rounded shadow-md">
-      <h1 className="text-2xl font-bold mb-4 text-center">Add Book</h1>
+      <h1 className="text-2xl font-bold mb-4 text-center">Update Book</h1>
       <form onSubmit={handleSubmit}>
         {/* Image URL */}
         <div className="mb-4">
@@ -44,6 +59,7 @@ const AddBook = () => {
           <input
             type="url"
             name="image"
+            defaultValue={book.image}
             className="w-full p-2 border rounded"
             placeholder="Enter image URL"
             required
@@ -56,20 +72,9 @@ const AddBook = () => {
           <input
             type="text"
             name="name"
+            defaultValue={book.name}
             className="w-full p-2 border rounded"
             placeholder="Enter book title"
-            required
-          />
-        </div>
-
-        {/* Quantity */}
-        <div className="mb-4">
-          <label className="block font-semibold">Quantity:</label>
-          <input
-            type="number"
-            name="quantity"
-            className="w-full p-2 border rounded"
-            placeholder="Enter quantity"
             required
           />
         </div>
@@ -80,6 +85,7 @@ const AddBook = () => {
           <input
             type="text"
             name="authorName"
+            defaultValue={book.authorName}
             className="w-full p-2 border rounded"
             placeholder="Enter author name"
             required
@@ -91,6 +97,7 @@ const AddBook = () => {
           <label className="block font-semibold">Category:</label>
           <select
             name="category"
+            defaultValue={book.category}
             className="w-full p-2 border rounded"
             required
           >
@@ -105,23 +112,13 @@ const AddBook = () => {
           </select>
         </div>
 
-        {/* Short Description */}
-        <div className="mb-4">
-          <label className="block font-semibold">Short Description:</label>
-          <textarea
-            name="shortDescription"
-            className="w-full p-2 border rounded"
-            placeholder="Enter a brief description"
-            required
-          ></textarea>
-        </div>
-
         {/* Rating */}
         <div className="mb-4">
           <label className="block font-semibold">Rating (1-5):</label>
           <input
             type="number"
             name="rating"
+            defaultValue={book.rating}
             className="w-full p-2 border rounded"
             placeholder="Enter rating"
             min="1"
@@ -130,27 +127,18 @@ const AddBook = () => {
           />
         </div>
 
-        {/* Add Button */}
+        {/* Submit Button */}
         <button
           type="submit"
-          className="w-full bg-blue-500 text-white p-2 rounded hover:bg-blue-600"
+          className="w-full bg-green-500 text-white p-2 rounded hover:bg-green-600"
         >
-          Add Book
+          Update Book
         </button>
       </form>
 
-      {/* Static Book Content */}
-      <div className="mt-6 p-4 bg-white border rounded shadow-md">
-        <h2 className="text-xl font-bold">Book Content</h2>
-        <p className="text-gray-700">
-          Enter the book details above to add it to the collection.
-        </p>
-      </div>
-
-      {/* Toast Notification */}
       <ToastContainer />
     </div>
   );
 };
 
-export default AddBook;
+export default UpdateBookPage;
