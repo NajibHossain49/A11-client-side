@@ -1,66 +1,71 @@
-import React, { useState } from "react";
+import React, { useState, useContext, useEffect } from "react";
+import axios from "axios";
+import { AuthContext } from "../providers/AuthProvider";
 
 const BorrowedBooks = () => {
-  const [email, setEmail] = useState("");
+  const { user } = useContext(AuthContext); // Access user from AuthContext
   const [borrowedBooks, setBorrowedBooks] = useState([]);
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
 
-  const fetchBorrowedBooks = async () => {
-    setError("");
-    setLoading(true);
-    setBorrowedBooks([]);
+  useEffect(() => {
+    const fetchBorrowedBooks = async () => {
+      setError("");  // Clear any previous error
+      setLoading(true);
+      setBorrowedBooks([]);
 
-    if (!email) {
-      setError("Please enter a valid email.");
-      setLoading(false);
-      return;
-    }
-
-    try {
-      const response = await fetch(`http://localhost:5000/books/borrowed/${email}`);
-      if (!response.ok) {
-        throw new Error("Failed to fetch borrowed books.");
+      if (!user?.email) {
+        setError("User email not found. Please log in.");
+        setLoading(false);
+        return;
       }
-      const data = await response.json();
 
-      if (data.error) {
-        setError(data.error);
-      } else {
-        const filteredBooks = data
-          .map((book) => {
-            const filteredBorrowedBy = book.borrowedBy.filter(
-              (borrower) => borrower.userEmail === email
-            );
-            if (filteredBorrowedBy.length > 0) {
-              return { ...book, borrowedBy: filteredBorrowedBy };
-            }
-            return null;
-          })
-          .filter(Boolean);
+      try {
+        const response = await axios.get(
+          `${import.meta.env.VITE_API_URL}/books/borrowed/${user.email}`
+        );
 
-        setBorrowedBooks(filteredBooks);
+        const data = response.data;
+
+        if (data.error) {
+          setError(data.error);
+        } else {
+          const filteredBooks = data
+            .map((book) => {
+              const filteredBorrowedBy = book.borrowedBy.filter(
+                (borrower) => borrower.userEmail === user.email
+              );
+              if (filteredBorrowedBy.length > 0) {
+                return { ...book, borrowedBy: filteredBorrowedBy };
+              }
+              return null;
+            })
+            .filter(Boolean);
+
+          if (filteredBooks.length === 0) {
+            setError("You have not borrowed any books.");
+          } else {
+            setBorrowedBooks(filteredBooks);
+          }
+        }
+      } catch (err) {
+        // setError("Error fetching books. Please try again.");
+      } finally {
+        setLoading(false);
       }
-    } catch (err) {
-      setError("Error fetching books. Please try again.");
-    } finally {
-      setLoading(false);
-    }
-  };
+    };
+
+    fetchBorrowedBooks();
+  }, [user]);
 
   const returnBook = async (bookId, borrower) => {
     try {
-      const response = await fetch(`http://localhost:5000/books/return/${bookId}`, {
-        method: "PUT",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ userEmail: borrower.userEmail }),
-      });
+      const response = await axios.put(
+        `${import.meta.env.VITE_API_URL}/books/return/${bookId}`,
+        { userEmail: borrower.userEmail }
+      );
 
-      const data = await response.json();
-
-      if (response.ok) {
+      if (response.status === 200) {
         setBorrowedBooks((prevBooks) =>
           prevBooks
             .map((book) => {
@@ -69,17 +74,16 @@ const BorrowedBooks = () => {
                   (b) => b.userEmail !== borrower.userEmail
                 );
                 if (updatedBorrowedBy.length === 0) {
-                  // If no more borrowers remain, remove the book entirely
                   return null;
                 }
                 return { ...book, borrowedBy: updatedBorrowedBy };
               }
               return book;
             })
-            .filter(Boolean) // Remove null entries (books with no borrowers)
+            .filter(Boolean)
         );
       } else {
-        setError(data.error || "Failed to return the book.");
+        setError(response.data.error || "Failed to return the book.");
       }
     } catch (err) {
       setError("Error returning the book. Please try again.");
@@ -89,39 +93,11 @@ const BorrowedBooks = () => {
   return (
     <div style={{ padding: "20px", fontFamily: "Arial, sans-serif" }}>
       <h1>Borrowed Books Finder</h1>
-      <div style={{ marginBottom: "20px" }}>
-        <label htmlFor="email">Enter Email:</label>
-        <input
-          type="email"
-          id="email"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-          placeholder="user@example.com"
-          style={{
-            marginLeft: "10px",
-            padding: "5px",
-            fontSize: "16px",
-            width: "300px",
-          }}
-        />
-        <button
-          onClick={fetchBorrowedBooks}
-          style={{
-            marginLeft: "10px",
-            padding: "5px 10px",
-            fontSize: "16px",
-            backgroundColor: "#007BFF",
-            color: "#fff",
-            border: "none",
-            cursor: "pointer",
-            borderRadius: "5px",
-          }}
-        >
-          Fetch Books
-        </button>
-      </div>
       {loading && <p>Loading...</p>}
       {error && <p style={{ color: "red" }}>{error}</p>}
+      {!loading && borrowedBooks.length === 0 && !error && (
+        <p>You have not borrowed any books.</p>
+      )}
       <div>
         {borrowedBooks.map((book) => (
           <div
