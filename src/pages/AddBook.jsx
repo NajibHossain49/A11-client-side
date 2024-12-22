@@ -4,7 +4,7 @@ import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
 const AddBook = () => {
-  const categories = ["Novel", "Thriller", "History", "Drama", "Sci-Fi"];
+  const categories = ["Novel", "Thriller", "History", "Sci-Fi"];
 
   const handleSubmit = async (e) => {
     e.preventDefault();

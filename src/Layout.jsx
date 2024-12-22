@@ -13,7 +13,7 @@ const Layout = () => {
         <Outlet /> {/* Dynamic content will be rendered here */}
       </main>
       <footer>
-        <Footer />
+        {/* <Footer /> */}
       </footer>
     </div>
   );
