@@ -27,16 +27,17 @@ const BorrowedBooks = () => {
       if (data.error) {
         setError(data.error);
       } else {
-        // Filter `borrowedBy` to include only the entry matching the entered email
-        const filteredBooks = data.map((book) => {
-          const filteredBorrowedBy = book.borrowedBy.filter(
-            (borrower) => borrower.userEmail === email
-          );
-          if (filteredBorrowedBy.length > 0) {
-            return { ...book, borrowedBy: filteredBorrowedBy };
-          }
-          return null;
-        }).filter(Boolean); // Remove books without matching borrowers
+        const filteredBooks = data
+          .map((book) => {
+            const filteredBorrowedBy = book.borrowedBy.filter(
+              (borrower) => borrower.userEmail === email
+            );
+            if (filteredBorrowedBy.length > 0) {
+              return { ...book, borrowedBy: filteredBorrowedBy };
+            }
+            return null;
+          })
+          .filter(Boolean);
 
         setBorrowedBooks(filteredBooks);
       }
@@ -44,6 +45,44 @@ const BorrowedBooks = () => {
       setError("Error fetching books. Please try again.");
     } finally {
       setLoading(false);
+    }
+  };
+
+  const returnBook = async (bookId, borrower) => {
+    try {
+      const response = await fetch(`http://localhost:5000/books/return/${bookId}`, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ userEmail: borrower.userEmail }),
+      });
+
+      const data = await response.json();
+
+      if (response.ok) {
+        setBorrowedBooks((prevBooks) =>
+          prevBooks
+            .map((book) => {
+              if (book._id === bookId) {
+                const updatedBorrowedBy = book.borrowedBy.filter(
+                  (b) => b.userEmail !== borrower.userEmail
+                );
+                if (updatedBorrowedBy.length === 0) {
+                  // If no more borrowers remain, remove the book entirely
+                  return null;
+                }
+                return { ...book, borrowedBy: updatedBorrowedBy };
+              }
+              return book;
+            })
+            .filter(Boolean) // Remove null entries (books with no borrowers)
+        );
+      } else {
+        setError(data.error || "Failed to return the book.");
+      }
+    } catch (err) {
+      setError("Error returning the book. Please try again.");
     }
   };
 
@@ -94,7 +133,6 @@ const BorrowedBooks = () => {
               borderRadius: "5px",
             }}
           >
-            {/* Display Image */}
             <img
               src={book.image}
               alt={book.name}
@@ -109,13 +147,24 @@ const BorrowedBooks = () => {
             <h3>{book.name}</h3>
             <p>Author: {book.authorName}</p>
             <p>Category: {book.category}</p>
-            <p>Description: {book.shortDescription}</p>
-            <p>Quantity: {book.quantity}</p>
             {book.borrowedBy.map((borrower, index) => (
               <div key={index}>
-                <p>Borrowed By: {borrower.userName}</p>
-                <p>Email: {borrower.userEmail}</p>
+                <p>Borrowed Date: {borrower.borrowedAt}</p>
                 <p>Return Date: {borrower.returnDate}</p>
+                <button
+                  onClick={() => returnBook(book._id, borrower)}
+                  style={{
+                    marginTop: "10px",
+                    padding: "5px 10px",
+                    backgroundColor: "#28a745",
+                    color: "#fff",
+                    border: "none",
+                    borderRadius: "5px",
+                    cursor: "pointer",
+                  }}
+                >
+                  Return Book
+                </button>
               </div>
             ))}
           </div>

@@ -6,7 +6,7 @@ import { ToastContainer, toast } from "react-toastify";
 const UpdateBookPage = () => {
   const { id } = useParams(); // Get book ID from URL
   const navigate = useNavigate();
-  const categories = ["Novel", "Thriller", "History", "Drama", "Sci-Fi"];
+  const categories = ["Novel", "Thriller", "History","Sci-Fi"];
 
   const [book, setBook] = useState(null);
 
