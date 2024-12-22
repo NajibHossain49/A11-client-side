@@ -1,79 +1,126 @@
-import React, { useContext, useEffect, useState } from "react";
-import { AuthContext } from "../providers/AuthProvider";
-import axios from "axios";
-import { ToastContainer, toast } from "react-toastify";
-
+import React, { useState } from "react";
 
 const BorrowedBooks = () => {
-  const { user } = useContext(AuthContext);
+  const [email, setEmail] = useState("");
   const [borrowedBooks, setBorrowedBooks] = useState([]);
-  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false);
 
-  // Fetch borrowed books for the logged-in user
-  useEffect(() => {
-    const fetchBorrowedBooks = async () => {
-      try {
-        const response = await axios.get(`${import.meta.env.VITE_API_URL}/borrowed-books`, {
-          params: { email: user?.email },
-        });
-        setBorrowedBooks(response.data);
-        setLoading(false);
-      } catch (error) {
-        console.error("Error fetching borrowed books:", error);
-        setLoading(false);
-      }
-    };
+  const fetchBorrowedBooks = async () => {
+    setError("");
+    setLoading(true);
+    setBorrowedBooks([]);
 
-    if (user?.email) fetchBorrowedBooks();
-  }, [user?.email]);
+    if (!email) {
+      setError("Please enter a valid email.");
+      setLoading(false);
+      return;
+    }
 
-  const handleReturn = async (bookId) => {
     try {
-      await axios.post(`${import.meta.env.VITE_API_URL}/return-book`, {
-        email: user.email,
-        bookId,
-      });
-      toast.success("Book returned successfully!");
-      setBorrowedBooks((prev) => prev.filter((book) => book._id !== bookId));
-    } catch (error) {
-      toast.error("Failed to return book. Please try again.");
-      console.error(error);
+      const response = await fetch(`http://localhost:5000/books/borrowed/${email}`);
+      if (!response.ok) {
+        throw new Error("Failed to fetch borrowed books.");
+      }
+      const data = await response.json();
+
+      if (data.error) {
+        setError(data.error);
+      } else {
+        // Filter `borrowedBy` to include only the entry matching the entered email
+        const filteredBooks = data.map((book) => {
+          const filteredBorrowedBy = book.borrowedBy.filter(
+            (borrower) => borrower.userEmail === email
+          );
+          if (filteredBorrowedBy.length > 0) {
+            return { ...book, borrowedBy: filteredBorrowedBy };
+          }
+          return null;
+        }).filter(Boolean); // Remove books without matching borrowers
+
+        setBorrowedBooks(filteredBooks);
+      }
+    } catch (err) {
+      setError("Error fetching books. Please try again.");
+    } finally {
+      setLoading(false);
     }
   };
 
-  if (loading) {
-    return <div>Loading...</div>;
-  }
-
   return (
-    <div className="max-w-5xl mx-auto p-6 bg-gray-100">
-      <h1 className="text-3xl font-bold text-center mb-6">My Borrowed Books</h1>
-      {borrowedBooks.length === 0 ? (
-        <p className="text-center text-gray-600">No borrowed books found.</p>
-      ) : (
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-          {borrowedBooks.map((book) => (
-            <div key={book._id} className="p-4 border rounded bg-white shadow">
-              <img
-                src={book.image}
-                alt={book.name}
-                className="w-full h-40 object-cover mb-4 rounded"
-              />
-              <h2 className="text-xl font-semibold">{book.name}</h2>
-              <p className="text-gray-600">Category: {book.category}</p>
-              <p className="text-gray-600">Borrowed Date: {book.borrowedDate}</p>
-              <p className="text-gray-600">Return Date: {book.returnDate}</p>
-              <button
-                onClick={() => handleReturn(book._id)}
-                className="mt-4 w-full bg-red-500 text-white py-2 rounded hover:bg-red-600"
-              >
-                Return Book
-              </button>
-            </div>
-          ))}
-        </div>
-      )}
-      <ToastContainer />
+    <div style={{ padding: "20px", fontFamily: "Arial, sans-serif" }}>
+      <h1>Borrowed Books Finder</h1>
+      <div style={{ marginBottom: "20px" }}>
+        <label htmlFor="email">Enter Email:</label>
+        <input
+          type="email"
+          id="email"
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
+          placeholder="user@example.com"
+          style={{
+            marginLeft: "10px",
+            padding: "5px",
+            fontSize: "16px",
+            width: "300px",
+          }}
+        />
+        <button
+          onClick={fetchBorrowedBooks}
+          style={{
+            marginLeft: "10px",
+            padding: "5px 10px",
+            fontSize: "16px",
+            backgroundColor: "#007BFF",
+            color: "#fff",
+            border: "none",
+            cursor: "pointer",
+            borderRadius: "5px",
+          }}
+        >
+          Fetch Books
+        </button>
+      </div>
+      {loading && <p>Loading...</p>}
+      {error && <p style={{ color: "red" }}>{error}</p>}
+      <div>
+        {borrowedBooks.map((book) => (
+          <div
+            key={book._id}
+            style={{
+              border: "1px solid #ccc",
+              padding: "10px",
+              marginBottom: "10px",
+              borderRadius: "5px",
+            }}
+          >
+            {/* Display Image */}
+            <img
+              src={book.image}
+              alt={book.name}
+              style={{
+                width: "100%",
+                height: "200px",
+                objectFit: "cover",
+                borderRadius: "5px",
+                marginBottom: "10px",
+              }}
+            />
+            <h3>{book.name}</h3>
+            <p>Author: {book.authorName}</p>
+            <p>Category: {book.category}</p>
+            <p>Description: {book.shortDescription}</p>
+            <p>Quantity: {book.quantity}</p>
+            {book.borrowedBy.map((borrower, index) => (
+              <div key={index}>
+                <p>Borrowed By: {borrower.userName}</p>
+                <p>Email: {borrower.userEmail}</p>
+                <p>Return Date: {borrower.returnDate}</p>
+              </div>
+            ))}
+          </div>
+        ))}
+      </div>
     </div>
   );
 };
