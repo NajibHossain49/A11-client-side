@@ -1,8 +1,10 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
+import useAxiosSecure from '../hooks/useAxiosSecure'
 
 const AllBooks = () => {
+  const axiosSecure = useAxiosSecure()
   const [books, setBooks] = useState([]);
   const navigate = useNavigate();
 
@@ -10,7 +12,7 @@ const AllBooks = () => {
     // Fetch all books from the backend
     const fetchBooks = async () => {
       try {
-        const response = await axios.get(`${import.meta.env.VITE_API_URL}/books`);
+        const response = await axiosSecure.get(`/books`);
         setBooks(response.data);
       } catch (error) {
         console.error("Error fetching books:", error);

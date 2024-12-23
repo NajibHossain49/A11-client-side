@@ -3,9 +3,11 @@ import { AuthContext } from "../providers/AuthProvider";
 import axios from "axios";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import useAxiosSecure from '../hooks/useAxiosSecure'
 
 const BookBorrowModal = ({ book, isOpen, onClose }) => {
   const { user } = useContext(AuthContext); // Firebase auth context
+  const axiosSecure = useAxiosSecure() // Custom hook for axios with auth token
   const [returnDate, setReturnDate] = useState("");
 
   const handleBorrow = async () => {

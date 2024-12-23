@@ -2,8 +2,9 @@ import React from "react";
 import axios from "axios";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-
+import useAxiosSecure from '../hooks/useAxiosSecure'
 const AddBook = () => {
+  const axiosSecure = useAxiosSecure()
   const categories = ["Novel", "Thriller", "History", "Sci-Fi"];
 
   const handleSubmit = async (e) => {
@@ -22,7 +23,7 @@ const AddBook = () => {
   
     try {
       // Use the VITE_API_URL environment variable for the base URL
-      const response = await axios.post(`${import.meta.env.VITE_API_URL}/add-book`, formData);
+      const response = await axiosSecure.post(`/add-book`, formData);
       if (response.data.message === "Book Added") {
         toast.success("Book added successfully!");
         e.target.reset(); // Reset the form after successful submission

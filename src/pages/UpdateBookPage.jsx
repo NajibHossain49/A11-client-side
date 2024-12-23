@@ -2,9 +2,11 @@ import React, { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import axios from "axios";
 import { ToastContainer, toast } from "react-toastify";
+import useAxiosSecure from '../hooks/useAxiosSecure'
 
 const UpdateBookPage = () => {
   const { id } = useParams(); // Get book ID from URL
+  const axiosSecure = useAxiosSecure(); // Custom Axios instance
   const navigate = useNavigate();
   const categories = ["Novel", "Thriller", "History","Sci-Fi"];
 
@@ -14,7 +16,7 @@ const UpdateBookPage = () => {
     // Fetch the specific book data
     const fetchBook = async () => {
       try {
-        const response = await axios.get(`${import.meta.env.VITE_API_URL}/books/${id}`);
+        const response = await axiosSecure.get(`/books/${id}`);
         setBook(response.data);
       } catch (error) {
         console.error("Error fetching book:", error);
@@ -36,7 +38,7 @@ const UpdateBookPage = () => {
     };
 
     try {
-      await axios.put(`${import.meta.env.VITE_API_URL}/books/${id}`, formData);
+      await axiosSecure.put(`/books/${id}`, formData);
       toast.success("Book updated successfully!");
       navigate("/all-books"); // Redirect to All Books Page
     } catch (error) {

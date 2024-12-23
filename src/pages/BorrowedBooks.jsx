@@ -1,9 +1,10 @@
 import React, { useState, useContext, useEffect } from "react";
 import axios from "axios";
 import { AuthContext } from "../providers/AuthProvider";
-
+import useAxiosSecure from '../hooks/useAxiosSecure'
 const BorrowedBooks = () => {
   const { user } = useContext(AuthContext); // Access user from AuthContext
+  const axiosSecure = useAxiosSecure(); // Custom hook to get axios instance with token
   const [borrowedBooks, setBorrowedBooks] = useState([]);
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
@@ -21,8 +22,8 @@ const BorrowedBooks = () => {
       }
 
       try {
-        const response = await axios.get(
-          `${import.meta.env.VITE_API_URL}/books/borrowed/${user.email}`
+        const response = await axiosSecure.get(
+          `/books/borrowed/${user.email}`
         );
 
         const data = response.data;

@@ -3,9 +3,11 @@ import { useParams } from "react-router-dom";
 import axios from "axios";
 import RatingStars from "react-rating-stars-component";
 import BorrowModal from "../components/BookBorrowModal";
+import useAxiosSecure from '../hooks/useAxiosSecure'
 
 const BookDetailsPage = () => {
   const { id } = useParams();
+  const axiosSecure = useAxiosSecure(); // Custom hook to get axios instance with token
   const [book, setBook] = useState(null);
   const [loading, setLoading] = useState(true);
   const [isModalOpen, setModalOpen] = useState(false);
@@ -13,7 +15,7 @@ const BookDetailsPage = () => {
   useEffect(() => {
     const fetchBookDetails = async () => {
       try {
-        const response = await axios.get(`${import.meta.env.VITE_API_URL}/books/${id}`);
+        const response = await axiosSecure.get(`/books/${id}`);
         setBook(response.data);
       } catch (error) {
         console.error("Error fetching book details:", error);
