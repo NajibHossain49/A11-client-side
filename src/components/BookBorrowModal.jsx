@@ -4,9 +4,11 @@ import axios from "axios";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import useAxiosSecure from "../hooks/useAxiosSecure";
+import { useNavigate } from "react-router-dom";
 
 const BookBorrowModal = ({ book, isOpen, onClose }) => {
   const { user } = useContext(AuthContext);
+  const navigate = useNavigate();
   const axiosSecure = useAxiosSecure();
   const [returnDate, setReturnDate] = useState("");
 
@@ -30,7 +32,13 @@ const BookBorrowModal = ({ book, isOpen, onClose }) => {
         toast.info("You have borrowed this book before!");
       } else {
         toast.success(response.data.message || "Book borrowed successfully.");
-        onClose();
+        console.log(response.data.message);
+        // Delay closing the modal to allow the toast to display
+        setTimeout(() => {
+          onClose();
+          navigate("/All-Books");
+        }, 2000);
+        
       }
     } catch (error) {
       console.error("Error borrowing book:", error);

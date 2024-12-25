@@ -36,7 +36,7 @@ const UpdateBookPage = () => {
     try {
       await axiosSecure.put(`/books/${id}`, formData);
       toast.success("Book updated successfully!");
-      navigate("/all-books");
+      // navigate("/all-books");
     } catch (error) {
       toast.error("Error updating book. Please try again.");
       console.error(error);
