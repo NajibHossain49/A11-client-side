@@ -3,7 +3,7 @@ import { Link, NavLink } from "react-router-dom";
 import { AuthContext } from "../providers/AuthProvider";
 import {
   Home,
-  Plane,
+  BookOpen,
   PlusCircle,
   FileText,
   LogOut,
@@ -44,7 +44,6 @@ const Navbar = () => {
       label: "Borrowed-Books",
       icon: <FileText className="mr-2" size={20} />,
     },
-    
   ];
 
   return (
@@ -58,10 +57,10 @@ const Navbar = () => {
           <div className="flex items-center">
             <Link to="/" className="flex items-center group">
               <div className="bg-gradient-to-r from-cyan-400 to-blue-600 p-2 rounded-full mr-3 group-hover:rotate-[360deg] transition-transform duration-700 ease-in-out">
-                <Plane className="text-white" size={24} />
+                <BookOpen className="text-white" size={24} />
               </div>
               <span className="text-2xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-cyan-500 to-blue-600 group-hover:from-indigo-500 group-hover:to-purple-600 transition-colors duration-500">
-                VisaFlow
+                LibraryLink
               </span>
             </Link>
           </div>
@@ -170,10 +169,10 @@ const Navbar = () => {
                 onClick={toggleMenu}
               >
                 <div className="bg-gradient-to-r from-cyan-400 to-blue-600 p-2 rounded-full mr-3">
-                  <Plane className="text-white" size={24} />
+                  <BookOpen className="text-white" size={24} />
                 </div>
                 <span className="text-2xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-cyan-500 to-blue-600">
-                  VisaFlow
+                  LibraryLink
                 </span>
               </Link>
             </div>

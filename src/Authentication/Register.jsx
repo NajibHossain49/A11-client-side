@@ -1,49 +1,56 @@
-import { Link, useNavigate } from 'react-router-dom'
-import bgImg from '../assets/images/register.jpg'
-import logo from '../assets/images/logo.png'
-import { useContext } from 'react'
-import { AuthContext } from '../providers/AuthProvider'
-import toast from 'react-hot-toast'
+import { Link, useNavigate } from 'react-router-dom';
+import bgImg from '../assets/images/register.jpg';
+import logo from '../assets/images/logo.png';
+import { useContext } from 'react';
+import { AuthContext } from '../providers/AuthProvider';
+import toast from 'react-hot-toast';
 
 const Registration = () => {
-  const navigate = useNavigate()
-  const { signInWithGoogle, createUser, updateUserProfile, setUser } =
-    useContext(AuthContext)
+  const navigate = useNavigate();
+  const { signInWithGoogle, createUser, updateUserProfile, setUser } = useContext(AuthContext);
 
-  const handleSignUp = async e => {
-    e.preventDefault()
-    const form = e.target
-    const email = form.email.value
-    const name = form.name.value
-    const photo = form.photo.value
-    const pass = form.password.value
-    console.log({ email, pass, name, photo })
-    try {
-      //2. User Registration
-      const result = await createUser(email, pass)
-      console.log(result)
-      await updateUserProfile(name, photo)
-      setUser({ ...result.user, photoURL: photo, displayName: name })
-      toast.success('Signup Successful')
-      navigate('/')
-    } catch (err) {
-      console.log(err)
-      toast.error(err?.message)
+  const handleSignUp = async (e) => {
+    e.preventDefault();
+    const form = e.target;
+    const email = form.email.value;
+    const name = form.name.value;
+    const photo = form.photo.value;
+    const pass = form.password.value;
+
+    // Input validation
+    if (!email || !name || !photo || !pass) {
+      toast.error('All fields are required.');
+      return;
     }
-  }
 
-  // Google Signin
+    const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z]).{6,}$/;
+    if (!passwordRegex.test(pass)) {
+      toast.error('Password is weak!');
+      return;
+    }
+
+    try {
+      const result = await createUser(email, pass);
+      await updateUserProfile(name, photo);
+      setUser({ ...result.user, photoURL: photo, displayName: name });
+      toast.success('Signup Successful');
+      navigate('/');
+    } catch (err) {
+      console.log(err);
+      toast.error(err?.message);
+    }
+  };
+
   const handleGoogleSignIn = async () => {
     try {
-      await signInWithGoogle()
-
-      toast.success('Signin Successful')
-      navigate('/')
+      await signInWithGoogle();
+      toast.success('Signin Successful');
+      navigate('/');
     } catch (err) {
-      console.log(err)
-      toast.error(err?.message)
+      console.log(err);
+      toast.error(err?.message);
     }
-  }
+  };
 
   return (
     <div className='flex justify-center items-center min-h-[calc(100vh-306px)] my-12'>
@@ -192,7 +199,7 @@ const Registration = () => {
         ></div>
       </div>
     </div>
-  )
-}
+  );
+};
 
-export default Registration
+export default Registration;

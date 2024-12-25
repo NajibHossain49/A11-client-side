@@ -36,7 +36,7 @@ export const BannerSlider = () => {
             <div className="ml-16 text-white max-w-xl">
               <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-5xl font-extrabold mb-6 text-violet-300">
                 <TypingEffect
-                  text="Master Languages"
+                  text="Library Hub"
                   speed={100}
                   eraseDelay={2000}
                   typingDelay={500}
@@ -45,14 +45,14 @@ export const BannerSlider = () => {
               </h1>
               <p className="sm:text-base text-cyan-200 mb-8">
                 <TypingEffect
-                  text="Learn vocabulary the smart way"
+                  text="Your gateway to knowledge and learning tools"
                   speed={80}
                   eraseDelay={2000}
                   typingDelay={500}
                   eraseSpeed={50}
                 />
               </p>
-              <Link to='/start-learning'>
+              <Link to='/'>
               <button className="px-6 py-3 bg-violet-600 hover:bg-violet-700 transition-colors rounded-lg text-white font-semibold">
                 Get Started
               </button>

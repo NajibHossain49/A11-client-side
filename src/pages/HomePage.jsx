@@ -10,8 +10,8 @@ const HomePage = () => {
     <div>
       <Banner />
       <BookCategories />
-      {/* <ExtraSection1 />
-      <ExtraSection2 /> */}
+      <ExtraSection1 />
+      <ExtraSection2 />
     </div>
   );
 };

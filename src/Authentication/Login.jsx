@@ -1,9 +1,10 @@
 import { Link, useLocation, useNavigate } from 'react-router-dom'
 import bgImg from '../assets/images/login.jpg'
 import logo from '../assets/images/logo.png'
-import { useContext } from 'react'
+import { useContext, useState } from 'react'
 import { AuthContext } from '../providers/AuthProvider'
 import toast from 'react-hot-toast'
+
 const Login = () => {
   const navigate = useNavigate()
   const location = useLocation()
@@ -15,7 +16,6 @@ const Login = () => {
   const handleGoogleSignIn = async () => {
     try {
       await signInWithGoogle()
-
       toast.success('Signin Successful')
       navigate(from, { replace: true })
     } catch (err) {
@@ -25,20 +25,34 @@ const Login = () => {
   }
 
   // Email Password Signin
-  const handleSignIn = async e => {
+  const handleSignIn = async (e) => {
     e.preventDefault()
     const form = e.target
     const email = form.email.value
     const pass = form.password.value
-    console.log({ email, pass })
+    const confirmPass = form.confirmPassword?.value // If you're using a confirm password field
+
+    // Check if email or password is empty
+    if (!email || !pass) {
+      toast.error('All fields are required.')
+      return
+    }
+
+    // Check if passwords match
+    if (confirmPass && pass !== confirmPass) {
+      toast.error('Passwords do not match.')
+      return
+    }
+
     try {
-      //User Login
+      // User Login
       await signIn(email, pass)
       toast.success('Signin Successful')
       navigate(from, { replace: true })
     } catch (err) {
       console.log(err)
-      toast.error(err?.message)
+      // toast.error(err?.message)
+      toast.error('Passwords do not match!')
     }
   }
 
@@ -57,9 +71,7 @@ const Login = () => {
             <img className='w-auto h-7 sm:h-8' src={logo} alt='' />
           </div>
 
-          <p className='mt-3 text-xl text-center text-gray-600 '>
-            Welcome back!
-          </p>
+          <p className='mt-3 text-xl text-center text-gray-600 '>Welcome back!</p>
 
           <div
             onClick={handleGoogleSignIn}
@@ -100,6 +112,7 @@ const Login = () => {
 
             <span className='w-1/5 border-b dark:border-gray-400 lg:w-1/4'></span>
           </div>
+
           <form onSubmit={handleSignIn}>
             <div className='mt-4'>
               <label
@@ -135,6 +148,27 @@ const Login = () => {
                 type='password'
               />
             </div>
+
+            {/* Confirm Password (optional) */}
+            <div className='mt-4'>
+              <div className='flex justify-between'>
+                <label
+                  className='block mb-2 text-sm font-medium text-gray-600 '
+                  htmlFor='confirmPassword'
+                >
+                  Confirm Password
+                </label>
+              </div>
+
+              <input
+                id='confirmPassword'
+                autoComplete='current-password'
+                name='confirmPassword'
+                className='block w-full px-4 py-2 text-gray-700 bg-white border rounded-lg    focus:border-blue-400 focus:ring-opacity-40  focus:outline-none focus:ring focus:ring-blue-300'
+                type='password'
+              />
+            </div>
+
             <div className='mt-6'>
               <button
                 type='submit'

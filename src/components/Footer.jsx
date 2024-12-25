@@ -57,7 +57,7 @@ const Footer = () => {
             <div className="flex items-center space-x-3">
               <Globe className="w-10 h-10 text-blue-400 animate-spin-slow" />
               <h3 className="text-3xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-blue-500 to-purple-600">
-                VisaFlow
+                LibraryLink
               </h3>
             </div>
             <p className="text-gray-300 italic">
@@ -100,10 +100,10 @@ const Footer = () => {
             </h4>
             <ul className="space-y-2">
               {[
-                { name: "Visas", path: "/all-visas" },
-                { name: "Add Visa", path: "/add-visa" },
-                { name: "My Added Visas", path: "/my-added-visas" },
-                { name: "My Applications", path: "/my-visa-applications" },
+                { name: "Home", path: "/" },
+                { name: "All Books", path: "/All-Books" },
+                { name: "Add Book", path: "/Add-Book" },
+                { name: "Borrowed Books", path: "/Borrowed-Books" },
               ].map((link) => (
                 <li key={link.name}>
                   <Link
@@ -200,7 +200,7 @@ const Footer = () => {
                         transition-all duration-300
                     "
           >
-            © 2024 VisaFlow. Effortless Visa Applications, Anytime, Anywhere ❤️
+            © 2024: Effortless Library Management, Anytime, Anywhere ❤️
           </p>
         </div>
       </div>
