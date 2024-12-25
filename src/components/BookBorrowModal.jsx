@@ -3,11 +3,11 @@ import { AuthContext } from "../providers/AuthProvider";
 import axios from "axios";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import useAxiosSecure from '../hooks/useAxiosSecure'
+import useAxiosSecure from "../hooks/useAxiosSecure";
 
 const BookBorrowModal = ({ book, isOpen, onClose }) => {
-  const { user } = useContext(AuthContext); // Firebase auth context
-  const axiosSecure = useAxiosSecure() // Custom hook for axios with auth token
+  const { user } = useContext(AuthContext);
+  const axiosSecure = useAxiosSecure();
   const [returnDate, setReturnDate] = useState("");
 
   const handleBorrow = async () => {
@@ -26,12 +26,11 @@ const BookBorrowModal = ({ book, isOpen, onClose }) => {
         }
       );
 
-      // Check the response for custom messages
       if (response.data.alreadyBorrowed) {
-        toast.info("You have already borrowed this book!");
+        toast.info("You have borrowed this book before!");
       } else {
-        toast.success(response.data.message);
-        onClose(); // Close modal
+        toast.success(response.data.message || "Book borrowed successfully.");
+        onClose();
       }
     } catch (error) {
       console.error("Error borrowing book:", error);
@@ -42,48 +41,92 @@ const BookBorrowModal = ({ book, isOpen, onClose }) => {
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 bg-gray-800 bg-opacity-50 flex items-center justify-center">
-      {/* Toast Notification */}
-      <ToastContainer />
-      <div className="bg-white p-6 rounded shadow w-1/3">
-        <h2 className="text-xl font-bold mb-4">Borrow Book</h2>
-        <p>
-          <strong>Book Name:</strong> {book?.name}
-        </p>
-        <p>
-          <strong>User:</strong> {user?.displayName}
-        </p>
-        <p>
-          <strong>Email:</strong> {user?.email}
-        </p>
+    <div className="fixed inset-0 z-50 overflow-y-auto">
+      <div className="flex min-h-screen items-center justify-center px-4">
+        {/* Backdrop */}
+        <div
+          className="fixed inset-0 bg-black bg-opacity-40 transition-opacity"
+          onClick={onClose}
+        ></div>
 
-        <label className="block mt-4">
-          <span className="text-gray-700">Return Date</span>
-          <input
-            type="date"
-            value={returnDate}
-            onChange={(e) => setReturnDate(e.target.value)}
-            className="block w-full mt-1 border-gray-300 rounded shadow-sm"
-          />
-        </label>
+        {/* Modal */}
+        <div className="relative transform overflow-hidden rounded-lg bg-white shadow-xl transition-all w-full max-w-md">
+          {/* Header */}
+          <div className="bg-gradient-to-r from-blue-500 to-purple-500 px-6 py-4">
+            <h2 className="text-2xl font-bold text-white">Borrow Book</h2>
+          </div>
 
-        <div className="mt-6 flex justify-end gap-2">
-          <button
-            onClick={onClose}
-            className="px-4 py-2 bg-gray-300 rounded hover:bg-gray-400"
-          >
-            Cancel
-          </button>
-          <button
-            onClick={handleBorrow}
-            className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
-          >
-            Borrow
-          </button>
+          {/* Content */}
+          <div className="p-6">
+            {/* Book and User Info Card */}
+            <div className="bg-gray-50 rounded-lg p-4 mb-6">
+              <div className="space-y-3">
+                <div className="flex items-center border-b border-gray-200 pb-2">
+                  <span className="text-gray-600 w-32">Book Name:</span>
+                  <span className="font-medium text-gray-900">
+                    {book?.name}
+                  </span>
+                </div>
+                <div className="flex items-center border-b border-gray-200 pb-2">
+                  <span className="text-gray-600 w-32">User:</span>
+                  <span className="font-medium text-gray-900">
+                    {user?.displayName}
+                  </span>
+                </div>
+                <div className="flex items-center">
+                  <span className="text-gray-600 w-32">Email:</span>
+                  <span className="font-medium text-gray-900">
+                    {user?.email}
+                  </span>
+                </div>
+              </div>
+            </div>
+
+            {/* Return Date Input */}
+            <div className="mb-6">
+              <label className="block text-gray-700 text-sm font-bold mb-2">
+                Return Date
+              </label>
+              <input
+                type="date"
+                value={returnDate}
+                onChange={(e) => setReturnDate(e.target.value)}
+                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
+              />
+            </div>
+
+            {/* Buttons */}
+            <div className="flex justify-end space-x-3">
+              <button
+                onClick={onClose}
+                className="px-4 py-2 bg-gray-100 hover:bg-gray-200 text-gray-800 rounded-lg transition-colors duration-200"
+              >
+                Cancel
+              </button>
+              <button
+                onClick={handleBorrow}
+                className="px-4 py-2 bg-gradient-to-r from-blue-500 to-purple-500 hover:from-blue-600 hover:to-purple-600 text-white rounded-lg transition-colors duration-200"
+              >
+                Borrow Book
+              </button>
+            </div>
+          </div>
         </div>
       </div>
-      {/* Toast Notification */}
-      <ToastContainer />
+
+      <ToastContainer
+        position="top-right"
+        autoClose={3000}
+        hideProgressBar={false}
+        newestOnTop
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+        theme="light"
+        className="mt-16"
+      />
     </div>
   );
 };
