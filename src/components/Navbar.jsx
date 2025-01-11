@@ -38,16 +38,21 @@ const Navbar = () => {
       path: "/Add-Book",
       label: "Add Book",
       icon: <PlusCircle className="mr-2" size={20} />,
+      protected: true,
     },
     {
       path: "/Borrowed-Books",
       label: "Borrowed-Books",
       icon: <FileText className="mr-2" size={20} />,
+      protected: true,
     },
   ];
 
+  // Filter nav links based on user authentication
+  const displayedNavLinks = NavLinks.filter(link => !link.protected || user);
+
   return (
-    <nav className="bg-gradient-to-r from-blue-100 via-purple-100 to-indigo-200 shadow-sm relative">
+    <nav className="bg-gradient-to-r from-blue-100 via-purple-100 to-indigo-200 shadow-md fixed top-0 left-0 right-0 z-50">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Decorative Wave Background */}
         <div className="absolute top-0 left-0 w-full h-2 bg-gradient-to-r from-cyan-400 via-blue-500 to-indigo-600 opacity-80"></div>
@@ -67,7 +72,7 @@ const Navbar = () => {
 
           {/* Desktop Navigation (Large Screens) */}
           <div className="hidden lg:flex space-x-4 items-center">
-            {NavLinks.map((link) => (
+            {displayedNavLinks.map((link) => (
               <NavLink
                 key={link.path}
                 to={link.path}
@@ -145,9 +150,8 @@ const Navbar = () => {
 
       {/* Slide-out Menu for MD and Smaller Screens */}
       <div
-        className={`lg:hidden fixed inset-y-0 left-0 z-50 w-64 bg-white shadow-xl transform transition-transform duration-300 ease-in-out ${
-          isMenuOpen ? "translate-x-0" : "-translate-x-full"
-        }`}
+        className={`lg:hidden fixed inset-y-0 left-0 z-50 w-64 bg-white shadow-xl transform transition-transform duration-300 ease-in-out ${isMenuOpen ? "translate-x-0" : "-translate-x-full"
+          }`}
       >
         <div className="h-full overflow-y-auto pb-20">
           <div className="px-4 pt-6">
@@ -179,16 +183,19 @@ const Navbar = () => {
 
             {/* Navigation Links */}
             <div className="space-y-2">
-              {NavLinks.map((link) => (
-                <Link
+              {displayedNavLinks.map((link) => (
+                <NavLink
                   key={link.path}
                   to={link.path}
-                  className="text-gray-800 hover:bg-blue-50 block px-4 py-3 rounded-lg flex items-center text-lg transition-colors duration-200"
+                  className={({ isActive }) =>
+                    `text-gray-800 hover:bg-blue-50 block px-4 py-3 rounded-lg flex items-center text-lg transition-colors duration-200 ${isActive ? "bg-blue-50 text-blue-600" : ""
+                    }`
+                  }
                   onClick={toggleMenu}
                 >
                   {link.icon}
                   <span className="ml-3">{link.label}</span>
-                </Link>
+                </NavLink>
               ))}
             </div>
 
@@ -244,6 +251,14 @@ const Navbar = () => {
           </div>
         </div>
       </div>
+
+      {/* Overlay for Mobile Menu */}
+      {isMenuOpen && (
+        <div
+          className="fixed inset-0 bg-black bg-opacity-50 z-40 lg:hidden"
+          onClick={toggleMenu}
+        ></div>
+      )}
     </nav>
   );
 };

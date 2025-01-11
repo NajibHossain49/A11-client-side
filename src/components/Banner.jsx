@@ -23,9 +23,8 @@ export const BannerSlider = () => {
       {images.map((img, index) => (
         <div
           key={index}
-          className={`absolute w-full h-full transition-all duration-1000 ease-in-out ${
-            currentSlide === index ? "opacity-100 scale-100" : "opacity-0 scale-105"
-          }`}
+          className={`absolute w-full h-full transition-all duration-1000 ease-in-out ${currentSlide === index ? "opacity-100 scale-100" : "opacity-0 scale-105"
+            }`}
         >
           <img
             src={img}
@@ -52,10 +51,10 @@ export const BannerSlider = () => {
                   eraseSpeed={50}
                 />
               </p>
-              <Link to='/'>
-              <button className="px-6 py-3 bg-violet-600 hover:bg-violet-700 transition-colors rounded-lg text-white font-semibold">
-                Get Started
-              </button>
+              <Link to='/All-Books'>
+                <button className="px-6 py-3 bg-violet-600 hover:bg-violet-700 transition-colors rounded-lg text-white font-semibold">
+                  Get Started
+                </button>
               </Link>
             </div>
           </div>
@@ -66,11 +65,10 @@ export const BannerSlider = () => {
           <button
             key={index}
             onClick={() => setCurrentSlide(index)}
-            className={`w-4 h-4 rounded-full transition-all ${
-              currentSlide === index 
-                ? "bg-white scale-125 shadow-lg" 
-                : "bg-gray-400 hover:scale-110"
-            }`}
+            className={`w-4 h-4 rounded-full transition-all ${currentSlide === index
+              ? "bg-white scale-125 shadow-lg"
+              : "bg-gray-400 hover:scale-110"
+              }`}
           />
         ))}
       </div>

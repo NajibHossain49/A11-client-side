@@ -36,9 +36,11 @@ const Layout = () => {
     <div className="flex flex-col min-h-screen">
       <header>
         <Navbar />
+        {/* Add a spacer div to prevent content from going under navbar */}
+        <div className="h-20"></div>
       </header>
       <main className="flex-grow">
-        <Outlet /> {/* Dynamic content will be rendered here */}
+        <Outlet />
       </main>
       <footer>
         <Footer />

@@ -4,6 +4,7 @@ import Banner from "../components/Banner";
 import BookCategories from "../components/BookCategories";
 import ExtraSection1 from "../components/ExtraSection1";
 import ExtraSection2 from "../components/ExtraSection2";
+import ExtraSection3 from "../components/ExtraSection3";
 
 const HomePage = () => {
   const { scrollYProgress } = useScroll();
@@ -60,6 +61,10 @@ const HomePage = () => {
 
       <ScrollAnimatedSection>
         <ExtraSection2 />
+      </ScrollAnimatedSection>
+
+      <ScrollAnimatedSection>
+        <ExtraSection3 />
       </ScrollAnimatedSection>
 
       <motion.div
