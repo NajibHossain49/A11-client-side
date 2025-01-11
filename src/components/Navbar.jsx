@@ -49,7 +49,8 @@ const Navbar = () => {
   ];
 
   // Filter nav links based on user authentication
-  const displayedNavLinks = NavLinks.filter(link => !link.protected || user);
+  // const displayedNavLinks = NavLinks.filter(link => !link.protected || user);
+  const displayedNavLinks = user ? NavLinks : [];
 
   return (
     <nav className="bg-gradient-to-r from-blue-100 via-purple-100 to-indigo-200 shadow-md fixed top-0 left-0 right-0 z-50">

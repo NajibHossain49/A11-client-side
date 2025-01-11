@@ -50,7 +50,7 @@ const BorrowedBooks = () => {
           }
         }
       } catch (err) {
-        // setError("You have not borrowed any books yet.");
+        setError("Failed to fetch borrowed books.");
       } finally {
         setLoading(false);
       }
@@ -99,9 +99,12 @@ const BorrowedBooks = () => {
       <ToastContainer position="top-right" autoClose={3000} />
       
       <div className="max-w-7xl mx-auto">
-        <h1 className="text-4xl font-bold text-indigo-900 mb-8 text-center">
-          My Library Collection
-        </h1>
+        <div className="text-center mb-12">
+          <h1 className="text-4xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-indigo-600 to-purple-600">
+            My Library Collection
+          </h1>
+          <div className="h-1 w-24 bg-gradient-to-r from-indigo-600 to-purple-600 rounded-full mt-4 mx-auto"></div>
+        </div>
 
         {loading && (
           <div className="flex justify-center items-center h-64">
@@ -119,9 +122,9 @@ const BorrowedBooks = () => {
           {borrowedBooks.map((book) => (
             <div
               key={book._id}
-              className="bg-white rounded-xl shadow-lg overflow-hidden transform transition-all duration-300 hover:scale-105 hover:shadow-xl"
+              className="bg-white rounded-xl shadow-lg overflow-hidden transform transition-all duration-300 hover:scale-105 hover:shadow-xl flex flex-col h-full"
             >
-              <div className="relative h-64">
+              <div className="relative h-64 flex-shrink-0">
                 <img
                   src={book.image}
                   alt={book.name}
@@ -130,36 +133,38 @@ const BorrowedBooks = () => {
                 <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent"></div>
               </div>
 
-              <div className="p-6">
-                <h3 className="text-xl font-semibold text-gray-900 mb-2">
-                  {book.name}
-                </h3>
-                
-                <div className="space-y-2 mb-4">
-                  <p className="text-gray-600">
-                    <span className="font-medium">Author:</span> {book.authorName}
-                  </p>
-                  <p className="text-gray-600">
-                    <span className="font-medium">Category:</span> {book.category}
-                  </p>
+              <div className="p-6 flex flex-col flex-grow">
+                <div className="flex-grow">
+                  <h3 className="text-xl font-semibold text-gray-900 mb-4 line-clamp-2">
+                    {book.name}
+                  </h3>
+                  
+                  <div className="space-y-2 mb-4">
+                    <div className="inline-block px-3 py-1 bg-blue-50 text-blue-700 rounded-lg text-sm font-medium">
+                      {book.authorName}
+                    </div>
+                    <div className="inline-block px-3 py-1 bg-purple-50 text-purple-700 rounded-lg text-sm font-medium ml-2">
+                      {book.category}
+                    </div>
+                  </div>
                 </div>
 
                 {book.borrowedBy.map((borrower, index) => (
-                  <div key={index} className="border-t pt-4 mt-4">
+                  <div key={index} className="border-t border-gray-100 pt-4 mt-4">
                     <div className="space-y-2 text-sm text-gray-600">
-                      <p>
-                        <span className="font-medium">Borrowed:</span>{" "}
-                        {borrower.borrowedAt}
+                      <p className="flex justify-between">
+                        <span className="font-medium">Borrowed:</span>
+                        <span>{borrower.borrowedAt}</span>
                       </p>
-                      <p>
-                        <span className="font-medium">Return by:</span>{" "}
-                        {borrower.returnDate}
+                      <p className="flex justify-between">
+                        <span className="font-medium">Return by:</span>
+                        <span>{borrower.returnDate}</span>
                       </p>
                     </div>
                     
                     <button
                       onClick={() => returnBook(book._id, borrower)}
-                      className="mt-4 w-full bg-gradient-to-r from-indigo-500 to-purple-500 text-white py-2 px-4 rounded-lg font-medium transform transition-all duration-300 hover:from-indigo-600 hover:to-purple-600 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
+                      className="mt-4 w-full bg-gradient-to-r from-indigo-500 to-purple-500 text-white py-3 px-4 rounded-xl font-medium transform transition-all duration-300 hover:from-indigo-600 hover:to-purple-600 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 shadow-lg hover:shadow-xl"
                     >
                       Return Book
                     </button>
@@ -171,8 +176,8 @@ const BorrowedBooks = () => {
         </div>
 
         {!loading && borrowedBooks.length === 0 && !error && (
-          <div className="text-center text-gray-600 py-12">
-            <p className="text-xl">You have not borrowed any books yet.</p>
+          <div className="text-center py-12">
+            <p className="text-xl text-gray-600">You have not borrowed any books yet.</p>
           </div>
         )}
       </div>

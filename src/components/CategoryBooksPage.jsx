@@ -47,7 +47,7 @@ const CategoryBooksPage = () => {
           {books.map((book) => (
             <div
               key={book._id}
-              className="group relative bg-white rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-300 overflow-hidden border border-gray-100"
+              className="group relative bg-white rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-300 overflow-hidden border border-gray-100 flex flex-col h-full"
             >
               <div className="absolute top-4 right-4 z-10">
                 <div className="bg-white/80 backdrop-blur-sm p-2 rounded-xl shadow-lg">
@@ -55,7 +55,7 @@ const CategoryBooksPage = () => {
                 </div>
               </div>
 
-              <div className="aspect-w-3 aspect-h-4">
+              <div className="relative">
                 <img
                   src={book.image}
                   alt={book.name}
@@ -64,46 +64,50 @@ const CategoryBooksPage = () => {
                 <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/0 to-black/0 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
               </div>
 
-              <div className="p-6 space-y-4">
-                <div className="flex items-start justify-between">
-                  <h2 className="text-xl font-bold text-gray-800 mb-2 line-clamp-2 group-hover:text-blue-600 transition-colors duration-300">
-                    {book.name}
-                  </h2>
-                </div>
+              <div className="p-6 flex flex-col flex-grow">
+                <div className="flex-grow space-y-4">
+                  <div className="flex items-start justify-between">
+                    <h2 className="text-xl font-bold text-gray-800 mb-2 line-clamp-2 group-hover:text-blue-600 transition-colors duration-300">
+                      {book.name}
+                    </h2>
+                  </div>
 
-                <div className="space-y-3">
-                  <p className="flex items-center space-x-2">
-                    <span className="px-3 py-1 bg-blue-50 text-blue-700 rounded-lg text-sm font-medium">
-                      {book.authorName}
-                    </span>
-                  </p>
-                  <p className="flex items-center space-x-2">
-                    <span className="px-3 py-1 bg-purple-50 text-purple-700 rounded-lg text-sm font-medium">
-                      {book.category}
-                    </span>
-                  </p>
-                  <div className="flex items-center justify-between">
-                    <span className="inline-flex items-center px-3 py-1 rounded-lg text-sm font-medium bg-green-50 text-green-700">
-                      {book.quantity} in stock
-                    </span>
-                    <div className="flex items-center">
-                      <RatingStars
-                        count={5}
-                        value={book.rating}
-                        edit={false}
-                        size={20}
-                        activeColor="#fbbf24"
-                      />
+                  <div className="space-y-3">
+                    <p className="flex items-center space-x-2">
+                      <span className="px-3 py-1 bg-blue-50 text-blue-700 rounded-lg text-sm font-medium">
+                        {book.authorName}
+                      </span>
+                    </p>
+                    <p className="flex items-center space-x-2">
+                      <span className="px-3 py-1 bg-purple-50 text-purple-700 rounded-lg text-sm font-medium">
+                        {book.category}
+                      </span>
+                    </p>
+                    <div className="flex items-center justify-between">
+                      <span className="inline-flex items-center px-3 py-1 rounded-lg text-sm font-medium bg-green-50 text-green-700">
+                        {book.quantity} in stock
+                      </span>
+                      <div className="flex items-center">
+                        <RatingStars
+                          count={5}
+                          value={book.rating}
+                          edit={false}
+                          size={20}
+                          activeColor="#fbbf24"
+                        />
+                      </div>
                     </div>
                   </div>
                 </div>
 
-                <Link
-                  to={`/book-details/${book._id}`}
-                  className="block w-full text-center px-6 py-3 bg-gradient-to-r from-blue-600 to-purple-600 text-white rounded-xl hover:from-blue-700 hover:to-purple-700 transform hover:-translate-y-1 transition-all duration-200 font-medium shadow-lg hover:shadow-xl"
-                >
-                  View Details
-                </Link>
+                <div className="pt-4 mt-4 border-t border-gray-100">
+                  <Link
+                    to={`/book-details/${book._id}`}
+                    className="block w-full text-center px-6 py-3 bg-gradient-to-r from-blue-600 to-purple-600 text-white rounded-xl hover:from-blue-700 hover:to-purple-700 transform hover:-translate-y-1 transition-all duration-200 font-medium shadow-lg hover:shadow-xl"
+                  >
+                    View Details
+                  </Link>
+                </div>
               </div>
             </div>
           ))}
