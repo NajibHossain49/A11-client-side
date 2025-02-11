@@ -47,14 +47,7 @@ const Navbar = () => {
       icon: <FileText className="mr-2" size={20} />,
       protected: true,
     },
-    {
-      path: "/FAQ",
-      label: "FAQ",
-      icon: <MessageCircleQuestion className="mr-2" size={20} />,
-      protected: true,
-    },
   ];
-
 
   const displayedNavLinks = user ? NavLinks : [];
 
@@ -97,6 +90,17 @@ const Navbar = () => {
 
           {/* User Section for Large Screens */}
           <div className="hidden lg:flex items-center space-x-4">
+            <NavLink
+              to="/FAQ"
+              className={({ isActive }) =>
+                isActive
+                  ? "text-blue-600 bg-blue-50 px-3 py-2 rounded-lg flex items-center transition-all duration-300 ease-in-out hover:bg-blue-50 hover:shadow-md active"
+                  : "text-gray-700 hover:text-blue-600 px-3 py-2 rounded-lg flex items-center transition-all duration-300 ease-in-out hover:bg-blue-50 hover:shadow-md"
+              }
+            >
+              <MessageCircleQuestion className="mr-2" size={20} />
+              <span className="font-medium">FAQ</span>
+            </NavLink>
             {user ? (
               <div className="flex items-center space-x-4">
                 <div className="relative group">
@@ -157,8 +161,9 @@ const Navbar = () => {
 
       {/* Slide-out Menu for MD and Smaller Screens */}
       <div
-        className={`lg:hidden fixed inset-y-0 left-0 z-50 w-64 bg-white shadow-xl transform transition-transform duration-300 ease-in-out ${isMenuOpen ? "translate-x-0" : "-translate-x-full"
-          }`}
+        className={`lg:hidden fixed inset-y-0 left-0 z-50 w-64 bg-white shadow-xl transform transition-transform duration-300 ease-in-out ${
+          isMenuOpen ? "translate-x-0" : "-translate-x-full"
+        }`}
       >
         <div className="h-full overflow-y-auto pb-20">
           <div className="px-4 pt-6">
@@ -195,7 +200,8 @@ const Navbar = () => {
                   key={link.path}
                   to={link.path}
                   className={({ isActive }) =>
-                    `text-gray-800 hover:bg-blue-50 block px-4 py-3 rounded-lg flex items-center text-lg transition-colors duration-200 ${isActive ? "bg-blue-50 text-blue-600" : ""
+                    `text-gray-800 hover:bg-blue-50 block px-4 py-3 rounded-lg flex items-center text-lg transition-colors duration-200 ${
+                      isActive ? "bg-blue-50 text-blue-600" : ""
                     }`
                   }
                   onClick={toggleMenu}
@@ -208,6 +214,18 @@ const Navbar = () => {
 
             {/* User Section */}
             <div className="mt-8 border-t border-gray-200 pt-6">
+              <NavLink
+                to="/FAQ"
+                className={({ isActive }) =>
+                  `text-gray-800 hover:bg-blue-50 block px-4 py-3 rounded-lg flex items-center text-lg transition-colors duration-200 mb-4 ${
+                    isActive ? "bg-blue-50 text-blue-600" : ""
+                  }`
+                }
+                onClick={toggleMenu}
+              >
+                <MessageCircleQuestion className="mr-3" size={26} />
+                <span>FAQ</span>
+              </NavLink>
               {user ? (
                 <div>
                   <div className="flex items-center mb-4">
