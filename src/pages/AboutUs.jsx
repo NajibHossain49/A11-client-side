@@ -1,4 +1,5 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
 
 const AboutUs = () => {
   const features = [
@@ -127,9 +128,11 @@ const AboutUs = () => {
           <p className="text-xl text-gray-600 mb-8">
             Have questions about our library management system? We're here to help!
           </p>
-          <button className="bg-indigo-600 text-white px-8 py-3 rounded-lg hover:bg-indigo-700 transition-colors">
-            Contact Us
-          </button>
+          <Link to="/ContactUs">
+            <button className="bg-indigo-600 text-white px-8 py-3 rounded-lg hover:bg-indigo-700 transition-colors">
+              Contact Us
+            </button>
+          </Link>
         </div>
       </div>
     </div>

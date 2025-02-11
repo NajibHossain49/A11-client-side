@@ -17,6 +17,7 @@ import FAQ from "../pages/FAQ";
 import MyProfile from "../pages/MyProfile";
 import UpdateProfile from "../pages/UpdateProfile";
 import AboutUs from "../pages/AboutUs";
+import ContactUs from "../pages/ContactUs";
 
 // Create a router object
 const router = createBrowserRouter([
@@ -109,6 +110,10 @@ const router = createBrowserRouter([
       {
         path: "/AboutUs",
         element: <AboutUs />,
+      },
+      {
+        path: "/ContactUs",
+        element: <ContactUs />,
       }
     ],
   },
