@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import axios from "axios";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
@@ -7,31 +7,62 @@ import { useNavigate } from "react-router-dom";
 
 const AddBook = () => {
   const axiosSecure = useAxiosSecure();
+  const [imageFile, setImageFile] = useState(null);
+  const [loading, setLoading] = useState(false);
 
   const categories = ["Novel", "Thriller", "History", "Sci-Fi"];
 
+  const uploadImageToCloudinary = async (file) => {
+    try {
+      // Create a FormData object to send the file
+      const formData = new FormData();
+      formData.append('file', file);
+      formData.append('upload_preset', 'ImageUpload'); // My upload preset
+
+      // Upload to Cloudinary
+      const response = await axios.post(
+        `https://api.cloudinary.com/v1_1/dbfxzy7t0/image/upload`, // My cloud name
+        formData
+      );
+
+      return response.data.secure_url;
+    } catch (error) {
+      console.error('Error uploading to Cloudinary:', error);
+      throw new Error('Image upload failed');
+    }
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
-
-    const formData = {
-      image: e.target.image.value,
-      name: e.target.name.value,
-      quantity: e.target.quantity.value,
-      authorName: e.target.authorName.value,
-      category: e.target.category.value,
-      shortDescription: e.target.shortDescription.value,
-      rating: e.target.rating.value,
-    };
+    setLoading(true);
 
     try {
+      let imageUrl = '';
+      if (imageFile) {
+        imageUrl = await uploadImageToCloudinary(imageFile);
+      }
+
+      const formData = {
+        image: imageUrl,
+        name: e.target.name.value,
+        quantity: e.target.quantity.value,
+        authorName: e.target.authorName.value,
+        category: e.target.category.value,
+        shortDescription: e.target.shortDescription.value,
+        rating: e.target.rating.value,
+      };
+
       const response = await axiosSecure.post(`/add-book`, formData);
       if (response.data.message === "Book Added") {
         toast.success("Book added successfully!");
         e.target.reset();
+        setImageFile(null);
       }
     } catch (error) {
       toast.error("Error adding book. Please try again.");
       console.error(error);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -54,18 +85,23 @@ const AddBook = () => {
           >
             {/* Left Column */}
             <div className="space-y-6">
-              {/* Image URL */}
+              {/* Image Upload */}
               <div className="relative">
                 <label className="text-sm font-medium text-gray-700 block mb-2">
-                  Book Cover Image URL
+                  Book Cover Image
                 </label>
                 <input
-                  type="url"
-                  name="image"
+                  type="file"
+                  accept="image/*"
+                  onChange={(e) => setImageFile(e.target.files[0])}
                   className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-500 focus:border-transparent transition duration-200"
-                  placeholder="https://example.com/book-cover.jpg"
                   required
                 />
+                {imageFile && (
+                  <p className="mt-2 text-sm text-gray-500">
+                    Selected: {imageFile.name}
+                  </p>
+                )}
               </div>
 
               {/* Book Name */}
@@ -131,7 +167,7 @@ const AddBook = () => {
                   className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-500 focus:border-transparent transition duration-200"
                   placeholder="1"
                   required
-                  min="1" 
+                  min="1"
                 />
               </div>
 
@@ -169,9 +205,10 @@ const AddBook = () => {
             <div className="col-span-1 md:col-span-2">
               <button
                 type="submit"
-                className="w-full bg-gradient-to-r from-blue-600 to-purple-600 text-white py-4 px-8 rounded-lg font-semibold hover:from-blue-700 hover:to-purple-700 transform hover:scale-[1.02] transition-all duration-200 shadow-lg"
+                disabled={loading}
+                className="w-full bg-gradient-to-r from-blue-600 to-purple-600 text-white py-4 px-8 rounded-lg font-semibold hover:from-blue-700 hover:to-purple-700 transform hover:scale-[1.02] transition-all duration-200 shadow-lg disabled:opacity-50 disabled:cursor-not-allowed"
               >
-                Add Book to Library
+                {loading ? "Adding Book..." : "Add Book to Library"}
               </button>
             </div>
           </form>
@@ -185,9 +222,9 @@ const AddBook = () => {
           </div>
           <p className="text-gray-600 leading-relaxed">
             Your book will be added to the library catalog once you submit the
-            form above. Make sure all details are accurate and the image URL is
-            valid. The description should be concise yet informative to help
-            readers discover your book.
+            form above. Make sure all details are accurate and upload a clear
+            image of the book cover. The description should be concise yet
+            informative to help readers discover your book.
           </p>
         </div>
       </div>
