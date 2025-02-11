@@ -16,6 +16,7 @@ import BookDetailsPage from "../components/BookDetailsPage";
 import FAQ from "../pages/FAQ";
 import MyProfile from "../pages/MyProfile";
 import UpdateProfile from "../pages/UpdateProfile";
+import AboutUs from "../pages/AboutUs";
 
 // Create a router object
 const router = createBrowserRouter([
@@ -104,6 +105,10 @@ const router = createBrowserRouter([
       {
         path: "/FAQ",
         element: <FAQ />,
+      },
+      {
+        path: "/AboutUs",
+        element: <AboutUs />,
       }
     ],
   },
