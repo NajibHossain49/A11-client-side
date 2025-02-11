@@ -13,6 +13,7 @@ import UpdateBookPage from "../pages/UpdateBookPage";
 import BookCategories from "../components/BookCategories";
 import CategoryBooksPage from "../components/CategoryBooksPage";
 import BookDetailsPage from "../components/BookDetailsPage";
+import FAQ from "../pages/FAQ";
 
 // Create a router object
 const router = createBrowserRouter([
@@ -82,6 +83,10 @@ const router = createBrowserRouter([
         path: "/categories/:category", // Dynamic route for category
         element: <CategoryBooksPage />,
       },
+      {
+        path: "/FAQ",
+        element: <FAQ />,
+      }
     ],
   },
   // Catch-all route for unmatched paths

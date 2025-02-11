@@ -11,6 +11,7 @@ import {
   User,
   Globe,
   X,
+  MessageCircleQuestion,
 } from "lucide-react";
 
 const Navbar = () => {
@@ -46,10 +47,15 @@ const Navbar = () => {
       icon: <FileText className="mr-2" size={20} />,
       protected: true,
     },
+    {
+      path: "/FAQ",
+      label: "FAQ",
+      icon: <MessageCircleQuestion className="mr-2" size={20} />,
+      protected: true,
+    },
   ];
 
-  // Filter nav links based on user authentication
-  // const displayedNavLinks = NavLinks.filter(link => !link.protected || user);
+
   const displayedNavLinks = user ? NavLinks : [];
 
   return (
