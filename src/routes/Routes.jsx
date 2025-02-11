@@ -14,6 +14,8 @@ import BookCategories from "../components/BookCategories";
 import CategoryBooksPage from "../components/CategoryBooksPage";
 import BookDetailsPage from "../components/BookDetailsPage";
 import FAQ from "../pages/FAQ";
+import MyProfile from "../pages/MyProfile";
+import UpdateProfile from "../pages/UpdateProfile";
 
 // Create a router object
 const router = createBrowserRouter([
@@ -62,6 +64,22 @@ const router = createBrowserRouter([
         element: (
           <PrivateRoute>
             <BookDetailsPage />
+          </PrivateRoute>
+        ),
+      },
+      {
+        path: "/my-profile",
+        element: (
+          <PrivateRoute>
+            <MyProfile />
+          </PrivateRoute>
+        ),
+      },
+      {
+        path: "/update-profile",
+        element: (
+          <PrivateRoute>
+            <UpdateProfile />
           </PrivateRoute>
         ),
       },

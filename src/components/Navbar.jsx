@@ -47,6 +47,12 @@ const Navbar = () => {
       icon: <FileText className="mr-2" size={20} />,
       protected: true,
     },
+    {
+      path: "/my-profile",
+      label: "MyProfile",
+      icon: <FileText className="mr-2" size={20} />,
+      protected: true,
+    },
   ];
 
   const displayedNavLinks = user ? NavLinks : [];
